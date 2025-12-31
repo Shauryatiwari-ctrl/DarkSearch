@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self';">
+    <title>SEALED VAULT RESEARCH PLATFORM</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Custom cursor -->
+    <div class="custom-cursor"></div>
+    
+    <!-- Grain overlay -->
+    <div class="grain"></div>
+    
+    <!-- Lock screen -->
+    <div id="lockScreen" class="lock-screen">
+        <div class="lock-container">
+            <h1>SEALED VAULT RESEARCH PLATFORM</h1>
+            <p class="warning">AUTHORIZED RESEARCH USE ONLY</p>
+            <p class="warning">ALL SESSIONS ARE LOCAL AND ENCRYPTED</p>
+            
+            <div class="auth-form">
+                <label for="passphrase">SESSION PASSPHRASE</label>
+                <input type="password" id="passphrase" placeholder="Enter passphrase..." autocomplete="off">
+                <button id="unlockBtn">INITIALIZE SESSION</button>
+            </div>
+            
+            <div class="disclaimer">
+                <p>⚠ This system is designed for legitimate academic research only.</p>
+                <p>By proceeding, you acknowledge:</p>
+                <ul>
+                    <li>All queries are analyzed for safety compliance</li>
+                    <li>Illegal content requests will be rejected</li>
+                    <li>Sessions are ephemeral and encrypted</li>
+                    <li>No data leaves this machine</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main interface (hidden initially) -->
+    <div id="mainInterface" class="main-interface hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1>SEALED VAULT RESEARCH PLATFORM</h1>
+                <span class="session-indicator">SESSION ACTIVE: <span id="sessionTimer">00:00</span></span>
+            </div>
+            <div class="header-right">
+                <button id="lockBtn" class="btn-secondary">🔒 LOCK SESSION</button>
+                <button id="panicBtn" class="btn-panic">⚠ EMERGENCY WIPE</button>
+            </div>
+        </header>
+        
+        <!-- Research tabs -->
+        <div class="tabs">
+            <div class="tab active" data-tab="1">Research #1</div>
+            <div class="tab" data-tab="2">Research #2</div>
+            <div class="tab-add">+</div>
+        </div>
+        
+        <!-- Main content area -->
+        <div class="content-wrapper">
+            <!-- Document viewer -->
+            <div class="document-viewer">
+                <div class="viewer-header">
+                    <span>DOCUMENT VIEWER</span>
+                    <span class="status">No document loaded</span>
+                </div>
+                <div class="viewer-content" id="documentContent">
+                    <div class="empty-state">
+                        <p>📄 NO DOCUMENT LOADED</p>
+                        <p class="empty-hint">This system operates on pre-indexed documents only.</p>
+                        <p class="empty-hint">External URLs are disabled for security.</p>
+                        <button id="loadSampleBtn" class="btn-secondary">Load Sample Document</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Chat -->
+            <div class="ai-chat">
+                <div class="chat-header">
+                    <span>AI RESEARCH ANALYST</span>
+                    <span class="status" id="aiStatus">READY</span>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <div class="system-message">
+                        <p>🔒 <strong>SYSTEM INITIALIZED</strong></p>
+                        <p>This AI operates under strict safety parameters:</p>
+                        <ul>
+                            <li>Academic analysis only</li>
+                            <li>No graphic descriptions</li>
+                            <li>No actionable instructions for harm</li>
+                            <li>Neutral, clinical tone</li>
+                        </ul>
+                        <p>All queries are filtered before processing.</p>
+                    </div>
+                </div>
+                
+                <div class="chat-input-wrapper">
+                    <textarea id="chatInput" placeholder="Enter research query..." rows="3"></textarea>
+                    <div class="input-actions">
+                        <button id="sendBtn" class="btn-primary">SEND</button>
+                        <button id="clearBtn" class="btn-secondary">CLEAR</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Topic gate modal -->
+        <div id="topicGate" class="modal hidden">
+            <div class="modal-content">
+                <h2>⚠ RESEARCH TOPIC CLASSIFICATION</h2>
+                <p>Your query relates to sensitive subject matter.</p>
+                <div class="topic-display">
+                    <strong>Detected Topics:</strong>
+                    <div id="detectedTopics"></div>
+                </div>
+                <p class="warning">Please confirm you are conducting legitimate academic research:</p>
+                <div class="modal-actions">
+                    <button id="confirmTopicBtn" class="btn-primary">CONFIRM - PROCEED</button>
+                    <button id="cancelTopicBtn" class="btn-secondary">CANCEL</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Rejection modal -->
+        <div id="rejectionModal" class="modal hidden">
+            <div class="modal-content rejection">
+                <h2>🚫 RESEARCH BOUNDARY REACHED</h2>
+                <p>This query cannot be processed under current safety parameters.</p>
+                <div class="rejection-reason">
+                    <strong>Reason:</strong>
+                    <p id="rejectionReason"></p>
+                </div>
+                <p>Suggested actions:</p>
+                <ul>
+                    <li>Rephrase query with academic framing</li>
+                    <li>Focus on theoretical analysis rather than practical application</li>
+                    <li>Review system guidelines</li>
+                </ul>
+                <div class="modal-actions">
+                    <button id="closeRejectionBtn" class="btn-primary">UNDERSTOOD</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="security.js"></script>
+    <script src="moderation.js"></script>
+    <script src="ai-mock.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
