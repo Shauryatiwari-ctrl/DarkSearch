@@ -3,155 +3,840 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'self';">
-    <title>SEALED VAULT RESEARCH PLATFORM</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Dark Secure Browser - Private AI Chat</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Creepster&family=Roboto:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #000000;
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Browser Chrome Container */
+        .browser-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            max-width: 100%;
+            margin: 0 auto;
+            background: #0d0d0d;
+            border: 1px solid #1a1a1a;
+        }
+
+        /* Top Bar - Browser Controls */
+        .browser-top-bar {
+            background: linear-gradient(180deg, #1a0000 0%, #0d0000 100%);
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #2a0000;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+            margin-right: 15px;
+        }
+
+        .control-btn {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .control-btn.close { background: #8b0000; }
+        .control-btn.minimize { background: #4a0000; }
+        .control-btn.maximize { background: #2a0000; }
+
+        .control-btn:hover {
+            filter: brightness(1.3);
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            flex: 1;
+            display: flex;
+            gap: 2px;
+            align-items: flex-end;
+            overflow-x: auto;
+        }
+
+        .tab-bar::-webkit-scrollbar {
+            height: 0;
+        }
+
+        .tab {
+            background: linear-gradient(180deg, #1a0000 0%, #0d0000 100%);
+            border: 1px solid #2a0000;
+            border-bottom: none;
+            padding: 8px 15px;
+            min-width: 180px;
+            max-width: 240px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .tab:hover {
+            background: linear-gradient(180deg, #2a0000 0%, #1a0000 100%);
+        }
+
+        .tab.active {
+            background: #000000;
+            border-color: #8b0000;
+            box-shadow: 0 -2px 10px rgba(139, 0, 0, 0.3);
+        }
+
+        .tab-icon {
+            font-size: 16px;
+            filter: drop-shadow(0 0 5px #ff0000);
+        }
+
+        .tab-title {
+            flex: 1;
+            font-size: 12px;
+            color: #999;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tab.active .tab-title {
+            color: #ff6666;
+        }
+
+        .tab-close {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: transparent;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            transition: all 0.2s;
+        }
+
+        .tab-close:hover {
+            background: #8b0000;
+            color: #fff;
+        }
+
+        .new-tab-btn {
+            background: transparent;
+            border: 1px solid #2a0000;
+            color: #666;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            margin: 0 8px;
+            transition: all 0.2s;
+        }
+
+        .new-tab-btn:hover {
+            background: #1a0000;
+            border-color: #8b0000;
+            color: #ff0000;
+        }
+
+        /* Address Bar */
+        .address-bar {
+            background: linear-gradient(180deg, #0d0000 0%, #000000 100%);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid #8b0000;
+            box-shadow: 0 2px 10px rgba(139, 0, 0, 0.3);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .nav-btn {
+            background: #1a0000;
+            border: 1px solid #2a0000;
+            color: #ff6666;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover {
+            background: #2a0000;
+            border-color: #8b0000;
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.3);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .url-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #0a0000;
+            border: 2px solid #2a0000;
+            border-radius: 20px;
+            padding: 8px 15px;
+            gap: 10px;
+            transition: all 0.2s;
+        }
+
+        .url-container:focus-within {
+            border-color: #8b0000;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.4);
+        }
+
+        .secure-icon {
+            font-size: 18px;
+            color: #00ff00;
+            animation: glow-secure 2s infinite;
+        }
+
+        @keyframes glow-secure {
+            0%, 100% { filter: drop-shadow(0 0 5px #00ff00); }
+            50% { filter: drop-shadow(0 0 10px #00ff00); }
+        }
+
+        .url-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ff6666;
+            font-size: 14px;
+            font-family: 'Roboto', monospace;
+        }
+
+        .url-input::placeholder {
+            color: #666;
+        }
+
+        .skull-indicator {
+            font-size: 18px;
+            animation: pulse-skull 2s infinite;
+        }
+
+        @keyframes pulse-skull {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        .browser-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            background: #1a0000;
+            border: 1px solid #2a0000;
+            color: #ff6666;
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #2a0000;
+            border-color: #8b0000;
+            box-shadow: 0 0 10px rgba(139, 0, 0, 0.3);
+        }
+
+        /* Blood drip effect */
+        .blood-drip-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .blood-drip {
+            position: absolute;
+            width: 2px;
+            height: 0;
+            background: linear-gradient(to bottom, #8b0000, transparent);
+            animation: drip 4s ease-in infinite;
+        }
+
+        @keyframes drip {
+            0% { height: 0; opacity: 1; }
+            100% { height: 150px; opacity: 0; }
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #000000;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Chat Interface */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(80, 0, 0, 0.1) 0%, transparent 50%),
+                #050000;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #0a0000;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #8b0000, #4a0000);
+            border-radius: 5px;
+        }
+
+        /* Welcome Message */
+        .welcome-box {
+            background: linear-gradient(135deg, #1a0000, #0d0000);
+            border: 2px solid #8b0000;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px auto;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(139, 0, 0, 0.4);
+        }
+
+        .welcome-box h2 {
+            color: #ff0000;
+            font-family: 'Creepster', cursive;
+            font-size: 28px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px #ff0000;
+        }
+
+        .welcome-box p {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .security-badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: #0a0000;
+            border: 1px solid #2a0000;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #00ff00;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Messages */
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 70%;
+            animation: messageSlide 0.4s ease;
+        }
+
+        @keyframes messageSlide {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #2a0000, #1a0000);
+            border-color: #8b0000;
+        }
+
+        .avatar {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #8b0000, #4a0000);
+            border: 2px solid #ff0000;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .message-content {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .message-bubble {
+            background: linear-gradient(135deg, #1a0000, #0d0000);
+            border: 1px solid #2a0000;
+            padding: 12px 16px;
+            border-radius: 18px;
+            color: #ccc;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .message-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .encrypted-tag {
+            color: #00ff00;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Typing Indicator */
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            max-width: 70%;
+        }
+
+        .typing-indicator.active {
+            display: flex;
+        }
+
+        .typing-dots {
+            background: linear-gradient(135deg, #1a0000, #0d0000);
+            border: 1px solid #2a0000;
+            padding: 12px 16px;
+            border-radius: 18px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #ff0000;
+            border-radius: 50%;
+            animation: typingAnim 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingAnim {
+            0%, 60%, 100% { transform: translateY(0); opacity: 1; }
+            30% { transform: translateY(-10px); opacity: 0.5; }
+        }
+
+        /* Input Area */
+        .chat-input-area {
+            background: linear-gradient(180deg, #0d0000 0%, #1a0000 100%);
+            padding: 20px;
+            border-top: 2px solid #8b0000;
+            box-shadow: 0 -5px 20px rgba(139, 0, 0, 0.3);
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-box {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            background: #0a0000;
+            border: 2px solid #2a0000;
+            border-radius: 25px;
+            padding: 12px 18px;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .input-box:focus-within {
+            border-color: #8b0000;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.4);
+        }
+
+        .message-input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ff6666;
+            font-size: 14px;
+            font-family: 'Roboto', sans-serif;
+            resize: none;
+            max-height: 100px;
+        }
+
+        .message-input::placeholder {
+            color: #666;
+        }
+
+        .send-button {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #8b0000, #4a0000);
+            border: 2px solid #ff0000;
+            border-radius: 50%;
+            color: #ff0000;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(139, 0, 0, 0.4);
+        }
+
+        .send-button:hover {
+            background: linear-gradient(135deg, #ff0000, #8b0000);
+            transform: scale(1.05);
+            box-shadow: 0 0 25px rgba(255, 0, 0, 0.6);
+        }
+
+        .send-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Status Bar */
+        .status-bar {
+            background: #0d0000;
+            padding: 6px 15px;
+            border-top: 1px solid #2a0000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .status-left {
+            display: flex;
+            gap: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            background: #00ff00;
+            border-radius: 50%;
+            animation: statusPulse 2s infinite;
+        }
+
+        @keyframes statusPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+    </style>
 </head>
 <body>
-    <!-- Custom cursor -->
-    <div class="custom-cursor"></div>
-    
-    <!-- Grain overlay -->
-    <div class="grain"></div>
-    
-    <!-- Lock screen -->
-    <div id="lockScreen" class="lock-screen">
-        <div class="lock-container">
-            <h1>SEALED VAULT RESEARCH PLATFORM</h1>
-            <p class="warning">AUTHORIZED RESEARCH USE ONLY</p>
-            <p class="warning">ALL SESSIONS ARE LOCAL AND ENCRYPTED</p>
-            
-            <div class="auth-form">
-                <label for="passphrase">SESSION PASSPHRASE</label>
-                <input type="password" id="passphrase" placeholder="Enter passphrase..." autocomplete="off">
-                <button id="unlockBtn">INITIALIZE SESSION</button>
+    <div class="browser-container">
+        <!-- Blood Drips -->
+        <div class="blood-drip-container">
+            <div class="blood-drip" style="left: 10%; animation-delay: 0.5s;"></div>
+            <div class="blood-drip" style="left: 30%; animation-delay: 1.5s;"></div>
+            <div class="blood-drip" style="left: 60%; animation-delay: 1s;"></div>
+            <div class="blood-drip" style="left: 85%; animation-delay: 2s;"></div>
+        </div>
+
+        <!-- Top Bar -->
+        <div class="browser-top-bar">
+            <div class="window-controls">
+                <button class="control-btn close" title="Close"></button>
+                <button class="control-btn minimize" title="Minimize"></button>
+                <button class="control-btn maximize" title="Maximize"></button>
             </div>
-            
-            <div class="disclaimer">
-                <p>⚠ This system is designed for legitimate academic research only.</p>
-                <p>By proceeding, you acknowledge:</p>
-                <ul>
-                    <li>All queries are analyzed for safety compliance</li>
-                    <li>Illegal content requests will be rejected</li>
-                    <li>Sessions are ephemeral and encrypted</li>
-                    <li>No data leaves this machine</li>
-                </ul>
+
+            <div class="tab-bar">
+                <div class="tab active">
+                    <span class="tab-icon">☠️</span>
+                    <span class="tab-title">Dark Secure Chat</span>
+                    <button class="tab-close">×</button>
+                </div>
+                <div class="tab">
+                    <span class="tab-icon">🔒</span>
+                    <span class="tab-title">Private Window</span>
+                    <button class="tab-close">×</button>
+                </div>
+            </div>
+
+            <button class="new-tab-btn" title="New Tab">+</button>
+        </div>
+
+        <!-- Address Bar -->
+        <div class="address-bar">
+            <div class="nav-buttons">
+                <button class="nav-btn" title="Back">◀</button>
+                <button class="nav-btn" title="Forward">▶</button>
+                <button class="nav-btn" title="Reload">↻</button>
+            </div>
+
+            <div class="url-container">
+                <span class="secure-icon" title="Secured with End-to-End Encryption">🔒</span>
+                <input type="text" class="url-input" value="dark://secure-ai-chat.onion/private" readonly>
+                <span class="skull-indicator">💀</span>
+            </div>
+
+            <div class="browser-actions">
+                <button class="action-btn" title="Bookmark">⭐</button>
+                <button class="action-btn" title="Settings" onclick="showSettings()">⚙️</button>
+                <button class="action-btn" title="Menu">☰</button>
             </div>
         </div>
-    </div>
-    
-    <!-- Main interface (hidden initially) -->
-    <div id="mainInterface" class="main-interface hidden">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-left">
-                <h1>SEALED VAULT RESEARCH PLATFORM</h1>
-                <span class="session-indicator">SESSION ACTIVE: <span id="sessionTimer">00:00</span></span>
-            </div>
-            <div class="header-right">
-                <button id="lockBtn" class="btn-secondary">🔒 LOCK SESSION</button>
-                <button id="panicBtn" class="btn-panic">⚠ EMERGENCY WIPE</button>
-            </div>
-        </header>
-        
-        <!-- Research tabs -->
-        <div class="tabs">
-            <div class="tab active" data-tab="1">Research #1</div>
-            <div class="tab" data-tab="2">Research #2</div>
-            <div class="tab-add">+</div>
-        </div>
-        
-        <!-- Main content area -->
-        <div class="content-wrapper">
-            <!-- Document viewer -->
-            <div class="document-viewer">
-                <div class="viewer-header">
-                    <span>DOCUMENT VIEWER</span>
-                    <span class="status">No document loaded</span>
-                </div>
-                <div class="viewer-content" id="documentContent">
-                    <div class="empty-state">
-                        <p>📄 NO DOCUMENT LOADED</p>
-                        <p class="empty-hint">This system operates on pre-indexed documents only.</p>
-                        <p class="empty-hint">External URLs are disabled for security.</p>
-                        <button id="loadSampleBtn" class="btn-secondary">Load Sample Document</button>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- AI Chat -->
-            <div class="ai-chat">
-                <div class="chat-header">
-                    <span>AI RESEARCH ANALYST</span>
-                    <span class="status" id="aiStatus">READY</span>
-                </div>
-                
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <div class="chat-container">
                 <div class="chat-messages" id="chatMessages">
-                    <div class="system-message">
-                        <p>🔒 <strong>SYSTEM INITIALIZED</strong></p>
-                        <p>This AI operates under strict safety parameters:</p>
-                        <ul>
-                            <li>Academic analysis only</li>
-                            <li>No graphic descriptions</li>
-                            <li>No actionable instructions for harm</li>
-                            <li>Neutral, clinical tone</li>
-                        </ul>
-                        <p>All queries are filtered before processing.</p>
+                    <div class="welcome-box">
+                        <h2>💀 Welcome to Dark Secure Browser 💀</h2>
+                        <p>You are now connected to the most private AI chat on the dark web.<br>
+                        All communications are encrypted end-to-end with military-grade security.</p>
+                        <div class="security-badges">
+                            <div class="badge">🔒 256-bit Encryption</div>
+                            <div class="badge">👁️ Zero Logs</div>
+                            <div class="badge">🌐 Tor Network</div>
+                            <div class="badge">☠️ Anonymous</div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="chat-input-wrapper">
-                    <textarea id="chatInput" placeholder="Enter research query..." rows="3"></textarea>
-                    <div class="input-actions">
-                        <button id="sendBtn" class="btn-primary">SEND</button>
-                        <button id="clearBtn" class="btn-secondary">CLEAR</button>
+
+                <!-- Typing Indicator -->
+                <div class="typing-indicator" id="typingIndicator">
+                    <div class="avatar">☠️</div>
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="chat-input-area">
+                    <div class="input-wrapper">
+                        <div class="input-box">
+                            <span style="font-size: 18px;">🦴</span>
+                            <textarea id="messageInput" class="message-input" placeholder="Type your encrypted message..." rows="1"></textarea>
+                            <span style="font-size: 18px;">🔐</span>
+                        </div>
+                        <button class="send-button" onclick="sendMessage()">➤</button>
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!-- Topic gate modal -->
-        <div id="topicGate" class="modal hidden">
-            <div class="modal-content">
-                <h2>⚠ RESEARCH TOPIC CLASSIFICATION</h2>
-                <p>Your query relates to sensitive subject matter.</p>
-                <div class="topic-display">
-                    <strong>Detected Topics:</strong>
-                    <div id="detectedTopics"></div>
+
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-left">
+                <div class="status-item">
+                    <span class="status-indicator"></span>
+                    <span>Tor Connected</span>
                 </div>
-                <p class="warning">Please confirm you are conducting legitimate academic research:</p>
-                <div class="modal-actions">
-                    <button id="confirmTopicBtn" class="btn-primary">CONFIRM - PROCEED</button>
-                    <button id="cancelTopicBtn" class="btn-secondary">CANCEL</button>
+                <div class="status-item">
+                    <span>🔒 End-to-End Encrypted</span>
+                </div>
+                <div class="status-item">
+                    <span>☠️ Anonymous Mode</span>
                 </div>
             </div>
-        </div>
-        
-        <!-- Rejection modal -->
-        <div id="rejectionModal" class="modal hidden">
-            <div class="modal-content rejection">
-                <h2>🚫 RESEARCH BOUNDARY REACHED</h2>
-                <p>This query cannot be processed under current safety parameters.</p>
-                <div class="rejection-reason">
-                    <strong>Reason:</strong>
-                    <p id="rejectionReason"></p>
-                </div>
-                <p>Suggested actions:</p>
-                <ul>
-                    <li>Rephrase query with academic framing</li>
-                    <li>Focus on theoretical analysis rather than practical application</li>
-                    <li>Review system guidelines</li>
-                </ul>
-                <div class="modal-actions">
-                    <button id="closeRejectionBtn" class="btn-primary">UNDERSTOOD</button>
-                </div>
+            <div class="status-right">
+                <span>Dark Secure Browser v6.66</span>
             </div>
         </div>
     </div>
-    
-    <script src="security.js"></script>
-    <script src="moderation.js"></script>
-    <script src="ai-mock.js"></script>
-    <script src="app.js"></script>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Auto-resize textarea
+        messageInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // Send on Enter
+        messageInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+
+            // Show typing indicator
+            typingIndicator.classList.add('active');
+            scrollToBottom();
+
+            // Simulate AI response
+            setTimeout(() => {
+                typingIndicator.classList.remove('active');
+                addMessage(getAIResponse(), 'ai');
+            }, 1500 + Math.random() * 1000);
+        }
+
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+
+            const time = new Date().toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit' 
+            });
+
+            const icon = sender === 'user' ? '🦴' : '☠️';
+
+            messageDiv.innerHTML = `
+                <div class="avatar">${icon}</div>
+                <div class="message-content">
+                    <div class="message-bubble">${text}</div>
+                    <div class="message-meta">
+                        <span>${time}</span>
+                        <span class="encrypted-tag">🔒 Encrypted</span>
+                    </div>
+                </div>
+            `;
+
+            chatMessages.appendChild(messageDiv);
+            scrollToBottom();
+        }
+
+        function getAIResponse() {
+            const responses = [
+                "Your message has been received through the encrypted channel. The darkness protects your secrets.",
+                "I am listening from the shadows. Your privacy is guaranteed by the crypts.",
+                "The secure connection is active. No traces will remain in the void.",
+                "Your encrypted message has been processed. The spirits guard your anonymity.",
+                "Connected through the dark web. Your communication is sealed in the abyss.",
+                "Message received via Tor network. Complete anonymity maintained.",
+                "The encrypted tunnel is secure. Your secrets are safe in the darkness."
+            ];
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showSettings() {
+            alert('⚙️ DARK BROWSER SETTINGS\n\n🔒 Encryption: AES-256 (Active)\n🌐 Network: Tor Hidden Service\n👁️ Logging: Disabled Forever\n☠️ Anonymity: Maximum Level\n🦴 Auto-Delete: On Exit\n💀 Fingerprint Protection: Enabled\n\nYour connection is completely untraceable.');
+        }
+
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function(e) {
+                if (!e.target.classList.contains('tab-close')) {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        document.querySelectorAll('.tab-close').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (document.querySelectorAll('.tab').length > 1) {
+                    this.parentElement.remove();
+                }
+            });
+        });
+
+        // New tab button
+        document.querySelector('.new-tab-btn').addEventListener('click', function() {
+            const tabBar = document.querySelector('.tab-bar');
+            const newTab = document.createElement('div');
+            newTab.className = 'tab';
+            newTab.innerHTML = `
+                <span class="tab-icon">🔐</span>
+                <span class="tab-title">New Private Tab</span>
+                <button class="tab-close">×</button>
+            `;
+            tabBar.appendChild(newTab);
+        });
+    </script>
 </body>
 </html>
